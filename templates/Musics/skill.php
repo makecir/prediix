@@ -20,7 +20,7 @@
             <h4 class="card-title">Rating : <?php echo $rating; ?></h4>
             </br>
                 <!-- CSVフォーム -->
-                    <?php echo $this->Form->create($csvform, ['type' => 'file', 'url' => ['action' => 'skill'], 'style' => "display:inline-block"]); ?>
+                    <?php echo $this->Form->create($csvform, ['type' => 'file', 'style' => "display:inline-block"]); ?>
                     <label class="btn btn-secondary my-auto" style="display:inline-block">
                         <span id="imported-filename">CSV選択</span>
                         <span style="display:none;">

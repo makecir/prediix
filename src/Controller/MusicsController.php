@@ -35,7 +35,7 @@ class MusicsController extends AppController
         $csvform = new CSVForm();
         $csv_data = $this->request->getData('upload-csv');
         if (!is_null($csv_data)) {
-            $this->set(compact('csv_data'));
+            //$this->set(compact('csv_data'));
             $result = $this->CSVJ->read($csv_data,[
                 "バージョン"=>"ver",
                 "タイトル"=>"title",
@@ -79,7 +79,7 @@ class MusicsController extends AppController
                 "LEGGENDARIA DJ LEVEL"=>"l_level",
                 "最終プレー日時"=>"last_play"
             ]); 
-
+            $csv_data=NUll;
             $rating=$this->getRating($result);
         }
         $this->set(compact('csvform'));
