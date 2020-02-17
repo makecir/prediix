@@ -167,9 +167,13 @@ class MusicsController extends AppController
             if($win<0)$win_player--;
             $total+=1;
         }
-        #$this->set(compact('total'));
+        #$this->set(compact('total'));(4.7)*400+1500
         $reswin=($win_player+$total)/2.0;
-        $rating= 400*log10( $reswin / ($total-1-$reswin))+1500; #イロレーティングに換算
+
+        //いろレーティングの式の底が0になってバグる　どうする？
+        if($total-$reswin==0)return 3500;
+
+        $rating= 400*log10( $reswin / ($total-$reswin))+1500; #イロレーティングに換算
         return $rating;
 
     }
