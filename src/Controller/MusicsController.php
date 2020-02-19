@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 use App\Form\CSVForm;
+use \SplFileObject;
 
 /**
  * Musics Controller
@@ -15,10 +16,9 @@ class MusicsController extends AppController
 {
 
     public $paginate = array (
-        'limit' => 5000,
-        'maxLimit' => 5000,
+        'limit' => 35000,
+        'maxLimit' => 35000,
     );
-
     /**
      * Index method
      *
@@ -54,8 +54,10 @@ class MusicsController extends AppController
             $this->getRating($result,$rating);
             $session->write('rating', $rating);
             $this->set(compact('rating'));
-            $this->redirect(['action' => 'skill']);
+            #$this->redirect(['action' => 'skill']);
         }
+        #$ghost=$this->getGhostData();
+        #$this->set(compact('ghost'));
     }
 
 
@@ -69,6 +71,7 @@ class MusicsController extends AppController
         #$this->set(compact('s2n_dict'));
 
         //resultから対戦しやすいように成形 playerを作る
+        //$player=[];
         $player=[];
         foreach($result["records"] as $record){
             // 灰
@@ -79,8 +82,8 @@ class MusicsController extends AppController
                     #$musicid=getMusicId($record[1],"h");
                     $title=$record[1]."[H]";
                     if(array_key_exists($title, $t2i_dict)){
-                        $musicid=$t2i_dict[$title];
-                        $player[$musicid]=$clear;
+                        $mid=$t2i_dict[$title];
+                        $player[$mid]=$clear;
                     }
                 }
             }
@@ -94,8 +97,8 @@ class MusicsController extends AppController
                         $title=$record[1]."[A]";
                     }
                     if(array_key_exists($title, $t2i_dict)){
-                        $musicid=$t2i_dict[$title];
-                        $player[$musicid]=$clear;
+                        $mid=$t2i_dict[$title];
+                        $player[$mid]=$clear;
                     }
                 }
             }
@@ -116,19 +119,21 @@ class MusicsController extends AppController
                         $title=$title."LEGGENDARIA";
                     }
                     if(array_key_exists($title, $t2i_dict)){
-                        $musicid=$t2i_dict[$title];
-                        $player[$musicid]=$clear;
+                        $mid=$t2i_dict[$title];
+                        $player[$mid]=$clear;
                     }
                 }
             }
         }
         #$this->set(compact('player'));
-
         //対戦
         $this->loadModel('Playdatas');
         $win_player=0;
         $total=0;
         $query=$this->Playdatas->find('all');
+        #$query=$this->paginate($this->Playdatas);
+        #$count=count($this->Playdatas);
+        #$rating=$this->Playdatas;
         foreach($query as $playdata){
             $win=0;
             foreach($player as $col => $dat){
@@ -141,6 +146,7 @@ class MusicsController extends AppController
             if($win<0)$win_player--;
             $total+=1;
         }
+
         // 自分と戦い、引き分ける
         $total+=1;
 
@@ -148,6 +154,41 @@ class MusicsController extends AppController
         $reswin=($win_player+$total)/2.0;
         $rating= 400*log10( $reswin / ($total-$reswin))+1500;
 
+        //対戦改良しっぱい
+        //return;
+        // $ghosts=$this->getGhostData();
+        // $rating=1500;
+        // return;
+        // if(count($player)!=count($ghosts['records'][0])){
+        //     $rating=1500;
+        //     return;
+        // }
+        // return;
+        // // $win_player=0;
+        // $total=0;
+        // foreach($ghosts['records'] as $ghost){
+        //     $win=0;
+        //     foreach($ghost as $index => $lamp){
+        //         if($lamp > $ghost[$index])$win++;
+        //         if($lamp < $ghost[$index])$win--;
+        //     }
+        //     if($win>0)$win_player++;
+        //     if($win<0)$win_player--;
+        //     $total+=1;
+        // }
+        // $player_sum=count($ghosts['records']);
+        // for( $i = 0 ; $i < $player_sum ; $i++ ){
+        //     $music_sum=count($ghosts['records'][$i]);
+        //     $win=0;
+        //     for( $j = 0 ; $j < $music_sum ; $j++ ){
+        //         if($player[$j] > $ghosts['records'][$i][$j])$win++;
+        //         if($player[$j] < $ghosts['records'][$i][$j])$win--;
+        //         unset($data[$j]);
+        //     }
+        //     if($win>0)$win_player++;
+        //     if($win<0)$win_player--;
+        //     $total+=1;
+        // }
     }
 
     public function getColNameDict(){
@@ -216,6 +257,7 @@ class MusicsController extends AppController
             if($key=="炎影")$key="火影";
             if($key=="DEATH†ZIGOQ 〜怒りの高速爆走野郎〜")$key="DEATH†ZIGOQ ～怒りの高速爆走野郎～";
             $res[$key]="m".(string)$music['mid'];
+            //$res[$key]=$music['id']-1;
         }
         return $res;
     }
@@ -231,6 +273,41 @@ class MusicsController extends AppController
         "FULLCOMBO CLEAR"=>7,
         ];
         return $res;
+    }
+
+    public function getGhostData(){
+        
+        $csv_path = '../webroot/source/ghost.csv';
+        chmod('../webroot/source/ghost.csv', 0644);
+        $file = new SplFileObject($csv_path); 
+        $file->setFlags(SplFileObject::READ_CSV);
+
+        $result=[];
+        $result["columns"]=array();
+        $result["records"]=array();
+        foreach ($file as $i => $line) {
+            mb_language("Japanese");
+            $line = mb_convert_encoding($line, "UTF-8", "auto");
+            if($i === 0 ){//カラム名の処理
+                foreach ($line as $j => $element) {
+                    if($j < 3)continue;
+                    $result["columns"][]=$element;
+                }
+            }
+            else{//カラム名を除くデータの処理
+                $record = [];
+                foreach ($line as $j => $element) {
+                    if($j < 3)continue;
+                    $lamp = (int)$element;
+                    if($lamp == 2) $lamp=1;
+                    $record[] = $lamp;
+                }
+                if (count($record) == 1 && empty($record[0])) continue;
+                $result["records"][] = $record; //push_back
+            }
+        }
+        return $result;
+
     }
 
     public function rateReset(){
