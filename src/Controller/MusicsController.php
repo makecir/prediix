@@ -13,6 +13,12 @@ use App\Form\CSVForm;
  */
 class MusicsController extends AppController
 {
+
+    public $paginate = array (
+        'limit' => 5000,
+        'maxLimit' => 5000,
+    );
+
     /**
      * Index method
      *
@@ -28,67 +34,32 @@ class MusicsController extends AppController
     public function skill()
     {
         $this->loadComponent('CSVJ');
+        #$musics = $this->paginate($this->Musics);
         $musics = $this->paginate($this->Musics);
-        $rating=0;
         $this->set(compact('musics'));
 
+        $session = $this->getRequest()->getSession();
+        if(!$session->check('rating')){
+             $session->write('rating', 1500.0000000);
+        }
+        $rating=$session->read('rating');
+        $this->set(compact('rating'));
+
         $csvform = new CSVForm();
+        $this->set(compact('csvform'));
         $csv_data = $this->request->getData('upload-csv');
         if (!is_null($csv_data)) {
-            //$this->set(compact('csv_data'));
-            $result = $this->CSVJ->read($csv_data,[
-                "バージョン"=>"ver",
-                "タイトル"=>"title",
-                "ジャンル"=>"genre",
-                "アーティスト"=>"art",
-                "プレー回数"=>"playcnt",
-                "BEGINNER 難易度"=>"b_dif",
-                "BEGINNER EXスコア"=>"b_ex",
-                "BEGINNER PGreat"=>"b_pg",
-                "BEGINNER Great"=>"b_g",
-                "BEGINNER ミスカウント"=>"b_misscnt",
-                "BEGINNER クリアタイプ"=>"b_clear",
-                "BEGINNER DJ LEVEL"=>"b_level",
-                "NORMAL 難易度"=>"n_dif",
-                "NORMAL EXスコア"=>"n_ex",
-                "NORMAL PGreat"=>"n_pg",
-                "NORMAL Great"=>"n_g",
-                "NORMAL ミスカウント"=>"n_misscnt",
-                "NORMAL クリアタイプ"=>"n_clear",
-                "NORMAL DJ LEVEL"=>"n_level",
-                "HYPER 難易度"=>"h_dif",
-                "HYPER EXスコア"=>"h_ex",
-                "HYPER PGreat"=>"h_pg",
-                "HYPER Great"=>"h_g",
-                "HYPER ミスカウント"=>"h_misscnt",
-                "HYPER クリアタイプ"=>"h_clear",
-                "HYPER DJ LEVEL"=>"h_level",
-                "ANOTHER 難易度"=>"a_dif",
-                "ANOTHER EXスコア"=>"a_ex",
-                "ANOTHER PGreat"=>"a_pg",
-                "ANOTHER Great"=>"a_g",
-                "ANOTHER ミスカウント"=>"a_misscnt",
-                "ANOTHER クリアタイプ"=>"a_clear",
-                "ANOTHER DJ LEVEL"=>"a_level",
-                "LEGGENDARIA 難易度"=>"l_dif",
-                "LEGGENDARIA EXスコア"=>"l_ex",
-                "LEGGENDARIA PGreat"=>"l_pg",
-                "LEGGENDARIA Great"=>"l_g",
-                "LEGGENDARIA ミスカウント"=>"l_misscnt",
-                "LEGGENDARIA クリアタイプ"=>"l_clear",
-                "LEGGENDARIA DJ LEVEL"=>"l_level",
-                "最終プレー日時"=>"last_play"
-            ]); 
-            $csv_data=NUll;
-            $rating=$this->getRating($result);
+            #$this->set(compact('csv_data'));
+            $result = $this->CSVJ->read($csv_data,$this->getColNameDict()); 
+            $this->getRating($result,$rating);
+            $session->write('rating', $rating);
+            $this->set(compact('rating'));
+            $this->redirect(['action' => 'skill']);
         }
-        $this->set(compact('csvform'));
-        $this->set(compact('rating'));
-        #$this->set(compact('result'));
     }
 
 
-    public function getRating(&$result){
+    public function getRating(&$result,&$rating){
 
         //musiIdのdict作成
 
@@ -97,7 +68,7 @@ class MusicsController extends AppController
         $s2n_dict=$this->getClearDict();
         #$this->set(compact('s2n_dict'));
 
-        //resultから対戦しやすいように成形
+        //resultから対戦しやすいように成形 playerを作る
         $player=[];
         foreach($result["records"] as $record){
             // 灰
@@ -113,6 +84,7 @@ class MusicsController extends AppController
                     }
                 }
             }
+            // 穴
             if($record[26]==12){
                 $clear=$s2n_dict[(string)$record[31]];
                 if($clear!=0){
@@ -127,6 +99,7 @@ class MusicsController extends AppController
                     }
                 }
             }
+            // LEGGENDARIA
             if($record[33]==12){
                 $clear=$s2n_dict[(string)$record[38]];
                 if($clear!=0){
@@ -150,6 +123,7 @@ class MusicsController extends AppController
             }
         }
         #$this->set(compact('player'));
+
         //対戦
         $this->loadModel('Playdatas');
         $win_player=0;
@@ -167,19 +141,63 @@ class MusicsController extends AppController
             if($win<0)$win_player--;
             $total+=1;
         }
-        #$this->set(compact('total'));(4.7)*400+1500
+        // 自分と戦い、引き分ける
+        $total+=1;
+
+        //#イロレーティングに換算
         $reswin=($win_player+$total)/2.0;
-
-        //いろレーティングの式の底が0になってバグる　どうする？
-        if($total-$reswin==0)return 3500;
-
-        $rating= 400*log10( $reswin / ($total-$reswin))+1500; #イロレーティングに換算
-        return $rating;
+        $rating= 400*log10( $reswin / ($total-$reswin))+1500;
 
     }
 
+    public function getColNameDict(){
+        $res=[
+            "バージョン"=>"ver",
+            "タイトル"=>"title",
+            "ジャンル"=>"genre",
+            "アーティスト"=>"art",
+            "プレー回数"=>"playcnt",
+            "BEGINNER 難易度"=>"b_dif",
+            "BEGINNER EXスコア"=>"b_ex",
+            "BEGINNER PGreat"=>"b_pg",
+            "BEGINNER Great"=>"b_g",
+            "BEGINNER ミスカウント"=>"b_misscnt",
+            "BEGINNER クリアタイプ"=>"b_clear",
+            "BEGINNER DJ LEVEL"=>"b_level",
+            "NORMAL 難易度"=>"n_dif",
+            "NORMAL EXスコア"=>"n_ex",
+            "NORMAL PGreat"=>"n_pg",
+            "NORMAL Great"=>"n_g",
+            "NORMAL ミスカウント"=>"n_misscnt",
+            "NORMAL クリアタイプ"=>"n_clear",
+            "NORMAL DJ LEVEL"=>"n_level",
+            "HYPER 難易度"=>"h_dif",
+            "HYPER EXスコア"=>"h_ex",
+            "HYPER PGreat"=>"h_pg",
+            "HYPER Great"=>"h_g",
+            "HYPER ミスカウント"=>"h_misscnt",
+            "HYPER クリアタイプ"=>"h_clear",
+            "HYPER DJ LEVEL"=>"h_level",
+            "ANOTHER 難易度"=>"a_dif",
+            "ANOTHER EXスコア"=>"a_ex",
+            "ANOTHER PGreat"=>"a_pg",
+            "ANOTHER Great"=>"a_g",
+            "ANOTHER ミスカウント"=>"a_misscnt",
+            "ANOTHER クリアタイプ"=>"a_clear",
+            "ANOTHER DJ LEVEL"=>"a_level",
+            "LEGGENDARIA 難易度"=>"l_dif",
+            "LEGGENDARIA EXスコア"=>"l_ex",
+            "LEGGENDARIA PGreat"=>"l_pg",
+            "LEGGENDARIA Great"=>"l_g",
+            "LEGGENDARIA ミスカウント"=>"l_misscnt",
+            "LEGGENDARIA クリアタイプ"=>"l_clear",
+            "LEGGENDARIA DJ LEVEL"=>"l_level",
+            "最終プレー日時"=>"last_play"
+        ];
+        return $res;
+    }
+
     public function getMusicIdDict(){
-        #$this->loadModel('Musics');
         $res=[];
         $query=$this->Musics->find('all');
         foreach($query as $music){
@@ -215,7 +233,13 @@ class MusicsController extends AppController
         return $res;
     }
 
-
+    public function rateReset(){
+        $session = $this->getRequest()->getSession();
+        if($session->check('rating')){
+            $session->write('rating', 1500.0000000);
+       }
+       $this->redirect(['action' => 'skill']);
+    }
 
     /**
      * View method
