@@ -40,7 +40,7 @@ class MusicsController extends AppController
 
         $session = $this->getRequest()->getSession();
         if(!$session->check('rating')){
-             $session->write('rating', 1500.0000000);
+             $session->write('rating', 1500.0000);
         }
         $rating=$session->read('rating');
         $this->set(compact('rating'));
@@ -56,6 +56,44 @@ class MusicsController extends AppController
             $this->set(compact('rating'));
             $this->redirect(['action' => 'skill']);
         }
+        
+        // 推定表作る
+        if(!$session->check('player')){
+            $session->write('player', []);
+        }
+        $player=$session->read('player');
+        
+        //作ってからソートしよ
+        $dif_str_dict=["easy","clear","hard","exhard","fc"];
+        $dif_disp_str_dict=["NO PLAY" ,"FAILED","ASSITED","EASY","CLEAR","HARD","EXHARD","FULLCOMBO"];
+        $musics = $this->Musics->find('all')->toArray();
+        $clear_ratings=[];
+        foreach($musics as $music){
+            if($music['title']=="Immortal")continue; //削除曲
+            $lamp=0;
+            $mid="m".$music['mid'];
+            if (array_key_exists($mid,$player)){
+                $lamp=$player[$mid];
+            }
+            for($i=0;$i<5;++$i){
+                if($lamp>=$i+3)continue;
+                // 1/(1+e^(-(Intercept+coefficient*(レート))))
+                $pred=1/(1+M_E**(-($music[$dif_str_dict[$i].'_intercept']+$music[$dif_str_dict[$i].'_coefficient']*($rating))));
+                // if($i==5 && $music['title']=="X-DEN") $pred=1/(1+M_E**(-($music[$dif_str_dict[$i].'_intercept']+$music[$dif_str_dict[$i].'_coefficient']*($rating))));
+                // else{
+                //     $pred=1/(1+M_E**(-($music[$dif_str_dict[$i].'_intercept']+$music[$dif_str_dict[$i].'_coefficient']*($rating))));
+                // }
+                $clear_ratings[]=['title'=>$music['title'],
+                    'version'=>$music['version'],
+                    'my_lamp'=>$dif_disp_str_dict[$lamp],
+                    'target_lamp'=>$dif_disp_str_dict[$i+3],
+                    'clear_rate'=>$pred
+                ];
+            }
+        }
+        $this->set(compact('clear_ratings'));
+
+
     }
 
 
@@ -122,21 +160,32 @@ class MusicsController extends AppController
                 }
             }
         }
+        $this->getRequest()->getSession()->write('player', $player);
+
+        //saveした後にassist を fail に
+        foreach($player as $lamp){
+            if($lamp==2)$lamp=1;
+        }
+
         #$this->set(compact('player'));
 
         //対戦
         $this->loadModel('Playdatas');
         $win_player=0;
         $total=0;
-        $query=$this->Playdatas->find('all');
-        foreach($query as $playdata){
+        #$query=$this->Playdatas->find('all');
+        $playdatas = $this->Playdatas->find('all')->toArray();
+        $count_i = count($playdatas);
+        $count_j = count($player);
+        for($i = 0 ; $i < $count_i ; ++$i ){
             $win=0;
             foreach($player as $col => $dat){
-                if($playdata[$col]==0)continue;
-                else if($playdata[$col]==2)$playdata[$col]=1;
-                if($dat>$playdata[$col])$win++;
-                if($dat<$playdata[$col])$win--;
+                if($playdatas[$i][$col]===0)continue;
+                if($playdatas[$i][$col]===2)$playdatas[$i][$col]=1;
+                if($dat>$playdatas[$i][$col])$win++;
+                if($dat<$playdatas[$i][$col])$win--;
             }
+            unset($playdatas[$i]);
             if($win>0)$win_player++;
             if($win<0)$win_player--;
             $total+=1;
@@ -146,8 +195,11 @@ class MusicsController extends AppController
 
         //#イロレーティングに換算
         $reswin=($win_player+$total)/2.0;
-        $rating= 400*log10( $reswin / ($total-$reswin))+1500;
 
+        //ok1973.0626 $rating= 400*log10( $reswin / ($total-$reswin-1) )+1500.0000;
+        //ok1972.9837 $rating= 400.00*log10( $reswin / ($total-$reswin) )+1500.0000;
+        //ok1972.9469
+        $rating= 400.00*log10( $reswin / ($total-$reswin) )+1500.0000;
     }
 
     public function getColNameDict(){
@@ -223,7 +275,7 @@ class MusicsController extends AppController
     public function getClearDict(){
         $res=["NO PLAY"=>0,
         "FAILED"=>1,
-        "ASSITED EASY"=>1,
+        "ASSITED EASY"=>2,
         "EASY CLEAR"=>3,
         "CLEAR"=>4,
         "HARD CLEAR"=>5,
@@ -236,7 +288,8 @@ class MusicsController extends AppController
     public function rateReset(){
         $session = $this->getRequest()->getSession();
         if($session->check('rating')){
-            $session->write('rating', 1500.0000000);
+            $session->write('rating', 1500.0000);
+            $session->write('player', []);
        }
        $this->redirect(['action' => 'skill']);
     }
