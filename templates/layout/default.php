@@ -41,11 +41,12 @@ $cakeDescription = 'BeatmaniaIIDX Rating Simulator';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
     <!-- <?= $this->Html->css('milligram.min.css') ?> -->
     <?= $this->Html->css('bootstrap.min.css') ?>
     <!-- <?= $this->Html->css('starter-template.css') ?> -->
-    <?= $this->Html->css('cake.css') ?>
+    <!-- <?= $this->Html->css('cake.css') ?> -->
     <!-- <?= $this->Html->css('style.css') ?> -->
 
     <?= $this->fetch('meta') ?>
@@ -53,14 +54,17 @@ $cakeDescription = 'BeatmaniaIIDX Rating Simulator';
     <?= $this->fetch('script') ?>
 </head>
 <body>
-    <nav class="top-nav">
-        <div class="top-nav-title">
-            <a href="/"><span>Cake</span>PHP</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
+    <a class="navbar-brand" href="#">IIDXレート推定（仮）</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+        <a class="nav-item nav-link active" href="">レート推定 <span class="sr-only">(current)</span></a>
+        <a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">このサイトについて</a>
         </div>
-        <div class="top-nav-links">
-            <a target="_blank" href="https://book.cakephp.org/4/">Documentation</a>
-            <a target="_blank" href="https://api.cakephp.org/4/">API</a>
-        </div>
+    </div>
     </nav>
     <main class="main">
         <div class="container">
@@ -79,7 +83,6 @@ $cakeDescription = 'BeatmaniaIIDX Rating Simulator';
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
-
         <!-- https://code.jquery.com/jquery-3.3.1.js
 https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js
 https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js
@@ -87,5 +90,6 @@ https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js
 https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js -->
 
     <?= $this->Html->script('style.js') ?>
+    <?= $this->Html->script('garlic.js') ?>
 </body>
 </html>

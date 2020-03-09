@@ -33,6 +33,9 @@ class MusicsController extends AppController
 
     public function skill()
     {
+        $test=$this->request->getData();
+        $this->set(compact('test'));
+
         $this->loadComponent('CSVJ');
         #$musics = $this->paginate($this->Musics);
         $musics = $this->paginate($this->Musics);
@@ -62,6 +65,9 @@ class MusicsController extends AppController
             $session->write('player', []);
         }
         $player=$session->read('player');
+
+        $savedat_str = $this->getSaveStr($rating,$player);
+        $this->set(compact('savedat_str'));
         
         //作ってからソートしよ
         $dif_str_dict=["easy","clear","hard","exhard","fc"];
@@ -92,7 +98,8 @@ class MusicsController extends AppController
             }
         }
         $this->set(compact('clear_ratings'));
-
+        $l2c_dict=$this->getColorDict();
+        $this->set(compact('l2c_dict'));
 
     }
 
@@ -284,13 +291,45 @@ class MusicsController extends AppController
         ];
         return $res;
     }
+    
+    public function getColorDict(){
+        //["NO PLAY" ,"FAILED","ASSITED","EASY","CLEAR","HARD","EXHARD","FULLCOMBO"];
+        $res=["NO PLAY"=>"light",
+        "FAILED"=>"secondary",
+        "ASSITED"=>"secondary",
+        "EASY"=>"success",
+        "CLEAR"=>"info",
+        "HARD"=>"danger",
+        "EXHARD"=>"warning",
+        "FULLCOMBO"=>"primary"
+        ];
+        return $res;
+    }
 
-    public function rateReset(){
+    public function getSaveStr(&$rating,&$player){
+        $savedat=['rating'=>$rating,'player'=>$player];
+        return json_encode($savedat);
+    }
+
+    public function dataSave(){
+        $this->Flash->success(__('The music has been saved.'));
+        $this->redirect(['action' => 'skill']);
+    }
+
+    public function dataLoad(){
         $session = $this->getRequest()->getSession();
-        if($session->check('rating')){
-            $session->write('rating', 1500.0000);
-            $session->write('player', []);
-       }
+        $savedat=json_decode($this->request->getData('submit-load'),TRUE);
+        if(!($savedat === [])){
+            $session->write('rating', $savedat['rating']);
+            $session->write('player', $savedat['player']);
+        }
+        $this->redirect(['action' => 'skill']);
+    }
+
+    public function dataClean(){
+        $session = $this->getRequest()->getSession();
+        $session->write('rating', 1500.0000);
+        $session->write('player', []);
        $this->redirect(['action' => 'skill']);
     }
 
