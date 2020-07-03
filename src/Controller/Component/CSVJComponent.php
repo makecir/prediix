@@ -41,7 +41,7 @@ class CSVJComponent extends Component
                         if($elem=="最終プレー日時\n"){
                             $elem="最終プレー日時";
                         }
-                        $result["columns"][] = $j2e_dict[$elem];
+                        $result["columns"][] = $elem;
                     }
 
                     #$result["columns"][] = $j2e_dict[$element]; //push_back

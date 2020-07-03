@@ -78,6 +78,56 @@ class MusicsTable extends Table
             ->notEmptyString('notes');
 
         $validator
+            ->integer('easy_intercept')
+            ->requirePresence('easy_intercept', 'create')
+            ->notEmptyString('easy_intercepts');
+
+        $validator
+            ->integer('easy_coefficient')
+            ->requirePresence('easy_coefficient', 'create')
+            ->notEmptyString('easy_coefficient');
+
+            $validator
+            ->integer('clear_intercept')
+            ->requirePresence('clear_intercept', 'create')
+            ->notEmptyString('clear_intercepts');
+
+        $validator
+            ->integer('clear_coefficient')
+            ->requirePresence('clear_coefficient', 'create')
+            ->notEmptyString('clear_coefficient');
+
+            $validator
+            ->integer('hard_intercept')
+            ->requirePresence('hard_intercept', 'create')
+            ->notEmptyString('hard_intercepts');
+
+        $validator
+            ->integer('hard_coefficient')
+            ->requirePresence('hard_coefficient', 'create')
+            ->notEmptyString('hard_coefficient');
+
+            $validator
+            ->integer('exhard_intercept')
+            ->requirePresence('exhard_intercept', 'create')
+            ->notEmptyString('exhard_intercepts');
+
+        $validator
+            ->integer('exhard_coefficient')
+            ->requirePresence('exhard_coefficient', 'create')
+            ->notEmptyString('exhard_coefficient');
+
+        $validator
+            ->integer('fc_intercept')
+            ->requirePresence('fc_intercept', 'create')
+            ->notEmptyString('fc_intercepts');
+
+        $validator
+            ->integer('fc_coefficient')
+            ->requirePresence('fc_coefficient', 'create')
+            ->notEmptyString('fc_coefficient');
+
+        $validator
             ->dateTime('created_ar')
             ->allowEmptyDateTime('created_ar');
 
