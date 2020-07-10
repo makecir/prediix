@@ -42,7 +42,7 @@
         <?php if($rating!=1500.00){?>
         <div>
         <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="推定☆12レート：<?php echo sprintf('%.2f',$rating); ?>
-上位<?php echo sprintf('%.2f%%',$player_rank); ?>" data-url="http://prediix.starfree.jp/" data-hashtags="ClearPowerIndicator" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+上位<?php echo sprintf('%.2f%%',$player_rank); ?>" data-url="https://cpi-beta.makecir.com/" data-hashtags="ClearPowerIndicator" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         </div>
         <?php } ?>
         </div>
@@ -50,7 +50,7 @@
         <div class="mb-1">
 
             <div style='float:left;' class="mr-1">
-                <a href="/prediix/musics/data-save" class="btn btn-outline-secondary my-auto" data-confirm-message="読み込んだプレイデータをブラウザに保存します" onclick="if (confirm(this.dataset.confirmMessage)) { localStorage.setItem( 'savedat', 
+                <a href="musics/data-save" class="btn btn-outline-secondary my-auto" data-confirm-message="読み込んだプレイデータをブラウザに保存します" onclick="if (confirm(this.dataset.confirmMessage)) { localStorage.setItem( 'savedat', 
                     savedat_str );  return true; } return false;">セーブ</a>
             </div>
             <div style='float:left;' class="mr-1">
