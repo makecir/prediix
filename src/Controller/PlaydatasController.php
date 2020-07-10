@@ -108,160 +108,160 @@ class PlaydatasController extends AppController
     // }
     
     //adcsvdata
-    // public function addcsv()
-    // {
-    //     $this->loadComponent('CSV');
-    //     $playdatas = $this->paginate($this->Playdatas);
+    public function addcsv()
+    {
+        $this->loadComponent('CSV');
+        $playdatas = $this->paginate($this->Playdatas);
 
-    //     $this->set(compact('playdatas'));
+        $this->set(compact('playdatas'));
 
-    //     // CSV入力時
-    //     $csvform = new CSVForm();
-    //     $csv_data = $this->request->getData('upload-csv');
-    //     if (!is_null($csv_data)) {
-    //         $this->set(compact('csv_data'));
-    //         //$result = $this->CSV->read($csv_data,["a"=>"b"]); 
+        // CSV入力時
+        $csvform = new CSVForm();
+        $csv_data = $this->request->getData('upload-csv');
+        if (!is_null($csv_data)) {
+            $this->set(compact('csv_data'));
+            $result = $this->CSV->read($csv_data,["a"=>"b"]); 
             
-    //         //$this->addresult($result);
-    //     }
-    //     $this->set(compact('csvform'));
-    //     //return $this->redirect(['action' => 'addcsv']);
-    // }
+            $this->addresult($result);
+        }
+        $this->set(compact('csvform'));
+        //return $this->redirect(['action' => 'addcsv']);
+    }
 
-    // public function addresult(&$result)
-    // {
-    //     foreach($result['records'] as $row){
-    //         //$insert_row
-    //         foreach($row as $i => $element){
-    //             if($result['columns'][$i]=="dummy")continue;
-    //             else $insert_row[$result['columns'][$i]]=$element;
-    //         }
-    //         $pd_puery = $this->Playdatas->query();
-    //         $pd_puery->insert(array_keys($insert_row));
-    //         $pd_puery->values($insert_row)->execute();
-    //     }
-    //     return $this->redirect(['action' => 'addcsv']);
-    // }
+    public function addresult(&$result)
+    {
+        foreach($result['records'] as $row){
+            //$insert_row
+            foreach($row as $i => $element){
+                if($result['columns'][$i]=="dummy")continue;
+                else $insert_row[$result['columns'][$i]]=$element;
+            }
+            $pd_puery = $this->Playdatas->query();
+            $pd_puery->insert(array_keys($insert_row));
+            $pd_puery->values($insert_row)->execute();
+        }
+        return $this->redirect(['action' => 'addcsv']);
+    }
 
     //adcsvdata
+    public function addcsvms()
+    {
+        $this->loadComponent('CSV');
+        $playdatas = $this->paginate($this->Playdatas);
+
+        $this->set(compact('playdatas'));
+
+        // CSV入力時
+        $csvform = new CSVForm();
+        $csv_data = $this->request->getData('upload-csv');
+        if (!is_null($csv_data)) {
+            $this->set(compact('csv_data'));
+            $result = $this->CSV->read($csv_data,["譜面ID"=>"mid",
+                "楽曲名"=>"title",
+                "バージョン"=>"version",
+                "難易度"=>"difficult",
+                "ノート数"=>"notes"
+            ]); 
+            
+            //$this->addresult($result);
+            $this->addmusic($result);
+        }
+        $this->set(compact('csvform'));
+        //return $this->redirect(['action' => 'addcsv']);
+    }
+
+    public function addmusic(&$result)
+    {
+        $this->loadModel('Musics');
+        foreach($result['records'] as $row){
+            //$insert_row
+            foreach($row as $i => $element){
+                $insert_row[$result['columns'][$i]]=$element;
+            }
+            $pd_puery = $this->Musics->query();
+            $pd_puery->insert(array_keys($insert_row));
+            $pd_puery->values($insert_row)->execute();
+        }
+        return $this->redirect(['action' => 'addcsvms']);
+    }
+
     // public function addcsvms()
     // {
     //     $this->loadComponent('CSV');
     //     $playdatas = $this->paginate($this->Playdatas);
 
     //     $this->set(compact('playdatas'));
+	// }
 
-    //     // CSV入力時
-    //     $csvform = new CSVForm();
-    //     $csv_data = $this->request->getData('upload-csv');
-    //     if (!is_null($csv_data)) {
-    //         $this->set(compact('csv_data'));
-    //         $result = $this->CSV->read($csv_data,["譜面ID"=>"mid",
-    //             "楽曲名"=>"title",
-    //             "バージョン"=>"version",
-    //             "難易度"=>"difficult",
-    //             "ノート数"=>"notes"
-    //         ]); 
+    public function addcsvmsic()
+    {
+        $this->loadComponent('CSVJ');
+        $playdatas = $this->paginate($this->Playdatas);
+
+        $this->set(compact('playdatas'));
+         // CSV入力時
+         $csvform = new CSVForm();
+         $csv_data = $this->request->getData('upload-csv');
+         if (!is_null($csv_data)) {
+             $this->set(compact('csv_data'));
+             $result = $this->CSVJ->read($csv_data,["譜面ID"=>"mid",
+                "楽曲名"=>"title",
+                "EASY_Intercept"=>"easy_intercept",
+                "EASY_coefficient"=>"easy_coefficient",
+                "CLEAR_Intercept"=>"clear_intercept",
+                "CLEAR_coefficient"=>"clear_coefficient",
+                "HARD_Intercept"=>"hard_intercept",
+                "HARD_coefficient"=>"hard_coefficient",
+                "EXHARD_Intercept"=>"exhard_intercept",
+                "EXHARD_coefficient"=>"exhard_coefficient",
+                "FC_Intercept"=>"fc_intercept",
+                "FC_coefficient"=>"fc_coefficient"
+            ]); 
             
-    //         //$this->addresult($result);
-    //         $this->addmusic($result);
-    //     }
-    //     $this->set(compact('csvform'));
-    //     //return $this->redirect(['action' => 'addcsv']);
-    // }
+            $this->set(compact('result'));
+            $this->addmusicic($result);
+        }
+        $this->set(compact('csvform'));
+        //return $this->redirect(['action' => 'addcsv']);
+    }
 
-    // public function addmusic(&$result)
-    // {
-    //     $this->loadModel('Musics');
-    //     foreach($result['records'] as $row){
-    //         //$insert_row
-    //         foreach($row as $i => $element){
-    //             $insert_row[$result['columns'][$i]]=$element;
-    //         }
-    //         $pd_puery = $this->Musics->query();
-    //         $pd_puery->insert(array_keys($insert_row));
-    //         $pd_puery->values($insert_row)->execute();
-    //     }
-    //     return $this->redirect(['action' => 'addcsvms']);
-    // }
+    public function addmusicic(&$result)
+    {
+        $this->loadModel('Musics');
+        $id=0;
+        $tmp;
 
-        // public function addcsvms()
-    // {
-    //     $this->loadComponent('CSV');
-    //     $playdatas = $this->paginate($this->Playdatas);
+        foreach($result['records'] as $row){
+            $id++;
+            //if($id>200)continue;
+            $music = $this->Musics->get($id, [
+                'contain' => []
+            ]);
+            while($music["mid"]!=$row['0']){
+                 $id++;
+                 $music = $this->Musics->get($id, [
+                     'contain' => []
+                 ]);
+                 if($id>10000)return; 
+             }
+            $music["easy_intercept"]=$row['2'];
+            $music["easy_coefficient"]=$row['3'];
+            $music["clear_intercept"]=$row['4'];
+            $music["clear_coefficient"]=$row['5'];
+            $music["hard_intercept"]=$row['6'];
+            $music["hard_coefficient"]=$row['7'];
+            $music["exhard_intercept"]=$row['8'];
+            $music["exhard_coefficient"]=$row['9'];
+            $music["fc_intercept"]=$row['10'];
+            $music["fc_coefficient"]=$row['11'];
 
-    //     $this->set(compact('playdatas'));
+            $music["easy_intercept"]=$row['2'];
 
-
-    // public function addcsvmsic()
-    // {
-    //     $this->loadComponent('CSVJ');
-    //     $playdatas = $this->paginate($this->Playdatas);
-
-    //     $this->set(compact('playdatas'));
-    //      // CSV入力時
-    //      $csvform = new CSVForm();
-    //      $csv_data = $this->request->getData('upload-csv');
-    //      if (!is_null($csv_data)) {
-    //          $this->set(compact('csv_data'));
-    //          $result = $this->CSVJ->read($csv_data,["譜面ID"=>"mid",
-    //             "楽曲名"=>"title",
-    //             "EASY_Intercept"=>"easy_intercept",
-    //             "EASY_coefficient"=>"easy_coefficient",
-    //             "CLEAR_Intercept"=>"clear_intercept",
-    //             "CLEAR_coefficient"=>"clear_coefficient",
-    //             "HARD_Intercept"=>"hard_intercept",
-    //             "HARD_coefficient"=>"hard_coefficient",
-    //             "EXHARD_Intercept"=>"exhard_intercept",
-    //             "EXHARD_coefficient"=>"exhard_coefficient",
-    //             "FC_Intercept"=>"fc_intercept",
-    //             "FC_coefficient"=>"fc_coefficient"
-    //         ]); 
-            
-    //         $this->set(compact('result'));
-    //         $this->addmusicic($result);
-    //     }
-    //     $this->set(compact('csvform'));
-    //     //return $this->redirect(['action' => 'addcsv']);
-    // }
-
-    // public function addmusicic(&$result)
-    // {
-    //     $this->loadModel('Musics');
-    //     $id=0;
-    //     $tmp;
-
-    //     foreach($result['records'] as $row){
-    //         $id++;
-    //         if($id>200)continue;
-    //         $music = $this->Musics->get($id, [
-    //             'contain' => []
-    //         ]);
-    //         while($music["mid"]!=$row['0']){
-    //              $id++;
-    //              $music = $this->Musics->get($id, [
-    //                  'contain' => []
-    //              ]);
-    //              if($id>10000)return; 
-    //          }
-    //         $music["easy_intercept"]=$row['2'];
-    //         $music["easy_coefficient"]=$row['3'];
-    //         $music["clear_intercept"]=$row['4'];
-    //         $music["clear_coefficient"]=$row['5'];
-    //         $music["hard_intercept"]=$row['6'];
-    //         $music["hard_coefficient"]=$row['7'];
-    //         $music["exhard_intercept"]=$row['8'];
-    //         $music["exhard_coefficient"]=$row['9'];
-    //         $music["fc_intercept"]=$row['10'];
-    //         $music["fc_coefficient"]=$row['11'];
-
-    //         $music["easy_intercept"]=$row['2'];
-
-    //         #$music = $this->Musics->patchEntity($music, $add_data);
-    //         #$tmp[]=$music;
-    //         #if($id>318)break;
-    //         $this->Musics->save($music);
-    //     }
-    //     $this->set(compact('tmp'));
-    // }
+            #$music = $this->Musics->patchEntity($music, $add_data);
+            #$tmp[]=$music;
+            #if($id>318)break;
+            $this->Musics->save($music);
+        }
+        $this->set(compact('tmp'));
+    }
 }
