@@ -4,7 +4,6 @@
  * @var \App\Model\Entity\Playdata[]|\Cake\Collection\CollectionInterface $playdatas
  */
 ?>
-<!-- <?php var_dump($dat) ?> -->
 <div class="playdatas index content">
     <?= $this->Html->link(__('New Playdata'), ['action' => 'add'], ['class' => 'button float-right']) ?>
     <h3><?= __('Playdatas') ?></h3>

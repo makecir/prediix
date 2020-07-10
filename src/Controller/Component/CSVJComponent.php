@@ -33,7 +33,7 @@ class CSVJComponent extends Component
         foreach ($file as $i => $line) {
             mb_language("Japanese");
             if($i === 0 ){//カラム名の処理
-                $line = mb_convert_encoding($line, "UTF-8", "auto");
+                $line = mb_convert_encoding($line, "UTF-8", "UTF-8");
                 foreach ($line as $element) {
                     #$element =  mb_convert_encoding($element, "UTF-8", "auto");
                     $element=explode( ',', $element );
@@ -55,7 +55,7 @@ class CSVJComponent extends Component
             }
             else{//カラム名を除くデータの処理
                 $record = [];
-                $line = mb_convert_encoding($line, "UTF-8", "auto");
+                $line = mb_convert_encoding($line, "UTF-8", "UTF-8");
                 foreach ($line as $element) {
                     $element=explode( ',', $element);
                     foreach($element as $elem){

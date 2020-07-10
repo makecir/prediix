@@ -33,12 +33,15 @@ class CSVComponent extends Component
             if($i === 0 ){//カラム名の処理
                 foreach ($line as $element) {
                     $element = mb_convert_encoding($element, "UTF-8", "auto");
-                    $result["columns"][] = $j2e_dict[$element]; //push_back
-                    //if($element=="")$cname="dummy";
-                    //else if($element=="ID")$cname="playerid";
-                    //else if($element=="class")$cname="class";
-                    //else $cname="m".(string)$element;
-                    //$result["columns"][]=$cname;
+                    //$result["columns"][] = $j2e_dict[$element]; //push_back
+                    if($element=="")$cname="dummy";
+                    else if($element=="ID")$cname="playerid";
+                    else if($element=="class")$cname="class";
+                    else {
+                        $element=mb_substr((string)$element,1);
+                        $cname="m".(string)$element;
+                    }
+                    $result["columns"][]=$cname;
                 }
             }
             else{//カラム名を除くデータの処理

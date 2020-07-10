@@ -39,59 +39,21 @@
         <?php if($player_rank!=50.00){?>
             <h5 class="card-title">上位<?php echo sprintf('%.2f%%',$player_rank); ?></h5>
         <?php } ?>
-        <?php if($rating!=1500.00){?>
+        <?php if($top_pred!=1){?>
         <div>
-        <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="推定☆12レート：<?php echo sprintf('%.2f',$rating); ?>
-上位<?php echo sprintf('%.2f%%',$player_rank); ?>" data-url="http://prediix.starfree.jp/" data-hashtags="ClearPowerIndicator" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text='推定☆12レート：<?php echo sprintf('%.2f',$rating); ?> 
+逆リコメンドTOP：<?= $bte_top['title']; ?>[<?= $bte_top['my_lamp']; ?>] <?= sprintf('%.2f',$bte_top['clear_rate']*100);?>%(50%レート<?php echo sprintf('%.2f',$bte_top['expect50']); ?>)' data-url="http://prediix.starfree.jp/" data-hashtags="ClearPowerIndicator" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         </div>
         <?php } ?>
         </div>
-
         <div class="mb-1">
-
-            <div style='float:left;' class="mr-1">
-                <a href="/prediix/musics/data-save" class="btn btn-outline-secondary my-auto" data-confirm-message="読み込んだプレイデータをブラウザに保存します" onclick="if (confirm(this.dataset.confirmMessage)) { localStorage.setItem( 'savedat', 
-                    savedat_str );  return true; } return false;">セーブ</a>
-            </div>
             <div style='float:left;' class="mr-1">
                 <?= $this->Form->create(null, ['url' => ['action' => 'dataLoad']]); ?>
                 <input type="hidden" name="submit-load" id="saveform" value='{"rating":1500,"player":[]}'>
                 <span class="submit"><input type="submit" id="submit-load" class="btn btn-outline-secondary my-auto" data-confirm-message="保存済みデータを読み込みます" onclick="if (confirm(this.dataset.confirmMessage)) { return true; } return false;" value="ロード"></span>
                 <?= $this->Form->end(); ?>
             </div>
-            <div>
-                <?= $this->Html->link(__('リセット'), ['action' => 'dataClean'],['class' => 'btn btn-outline-secondary my-auto','confirm'=>'読み込んだプレイデータをリセットします']) ?>
-            </div>
-
         </div>
-        <div class="mb-1 mt-1">
-            <?= $this->Form->create(null, ['style' => "display:inline-block"]); ?>
-            <div style='float:left;' class="mr-1">
-            <?= $this->Form->control('upload-text', ['type' => 'textarea','class'=>"textlines",'placeholder'=>'プレイデータ貼り付け','label' => '','style' => "float:left;"]); ?>
-            </div>
-            <div style='float:left;' class="mr-1">
-            <span class="submit"><input type="submit" id="upload-playtext" class="btn btn-primary my-auto my-auto" value="テキスト読み込み"></span>
-            </div>
-            <?= $this->Form->end(); ?>
-        </div>
-        <div>
-            <!-- CSVフォーム -->
-        <?php echo $this->Form->create($csvform, ['type' => 'file', 'style' => "display:inline-block"]); ?>
-        <label class="btn btn-secondary my-auto" style="display:inline-block">
-        <span id="imported-filename">CSV選択</span>
-        <span style="display:none;">
-            <?php echo $this->Form->control('upload-csv', ['type' => 'file', 'accept' => '.csv', 'label' => '', 'style'=>"display:none;"]); ?>
-        </span>
-        </label>
-        <span class="submit"><input type="submit" id="submit-csv" class="btn btn-primary my-auto" value="アップロード" style="display:none;"></span>
-        <?php
-            echo $this->Form->end();
-        ?>
-        <!-- CSVフォームここまで -->
-        </div>
-        <p class="card-text">※操作方法は<a href="about.php" target="_blank">利用方法</a>を参照ください</br>
-        ※算出に15秒程度かかります</br>
-        ※CSVのダウンロードは<a href="https://p.eagate.573.jp/game/2dx/27/djdata/score_download.html" target="_blank">こちら</a>から</p>
     </div>
 </div>
 
@@ -100,7 +62,7 @@
 <div class="card border-secondary mb-3">
     <div class="card-header">
         <h5 class="mb-0">
-            クリア率推定
+            逆リコメンド
         </h5>
     </div>
     <div class="card-body">
@@ -149,14 +111,11 @@
                             <hr>
                             <li class="nav-item">
                                 <h5 class="card-title">
-                                    現ランプ
+                                    達成済みランプ
                                     <div class="btn btn-sm btn-outline-secondary my-auto ml-2" onclick="checkTrue(22,29)">全てチェック</a></div>
                                     <div class="btn btn-sm btn-outline-secondary my-auto ml-2" onclick="checkFalse(22,29)">全て非チェック</a></div>
                                 </h5>
                                 <ul>
-                                <label class=mr-3><input type="checkbox" name="mynp" checked="checked"/>NOPLAY</label>
-                                <label class=mr-3><input type="checkbox" name="myfa" checked="checked"/>FAILED</label>
-                                <label class=mr-3><input type="checkbox" name="myae" checked="checked"/>ASSITED</label>
                                 <label class=mr-3><input type="checkbox" name="myes" checked="checked"/>EASY</label>
                                 <label class=mr-3><input type="checkbox" name="mycl" checked="checked"/>CLEAR</label>
                                 <label class=mr-3><input type="checkbox" name="myhd" checked="checked"/>HARD</label>
@@ -165,20 +124,6 @@
                                 </ul>
                             </li>
                             <hr>
-                            <li class="nav-item">
-                                <h5 class="card-title">
-                                    目標ランプ
-                                    <div class="btn btn-sm btn-outline-secondary my-auto ml-2" onclick="checkTrue(30,34)">全てチェック</a></div>
-                                    <div class="btn btn-sm btn-outline-secondary my-auto ml-2" onclick="checkFalse(30,34)">全て非チェック</a></div>
-                                </h5>
-                                <ul>
-                                <label class=mr-3><input type="checkbox" name="tares" checked="checked"/>EASY</label>
-                                <label class=mr-3><input type="checkbox" name="tarcl" checked="checked"/>CLEAR</label>
-                                <label class=mr-3><input type="checkbox" name="tarhd" checked="checked"/>HARD</label>
-                                <label class=mr-3><input type="checkbox" name="tarex" checked="checked"/>EXHARD</label>
-                                <label class=mr-3><input type="checkbox" name="tarfc" checked="checked"/>FC</label>
-                                <ul>
-                            </li>
                         </ul>
                         <input type="checkbox" id="dummycheck" checked="checked" style="display:none;" disabled="disabled" >
                     </form>
@@ -188,24 +133,24 @@
 
 
         <div class="table-responsive">
-        <table id="clear-rate-table" class="table table-bordered">
+        <table id="bte_table" class="table table-bordered">
             <thead >
                 <tr>
                     <th>バージョン</th>
                     <th>曲名</th>
-                    <th>現ランプ</th>
-                    <th>目標ランプ</th>
+                    <th>達成済ランプ</th>
                     <th>クリア確率</th>
+                    <th>50%要求レート</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($clear_ratings as $clear_rating): ?>
+                <?php foreach ($bte_table as $bte): ?>
                 <tr>
-                    <td><?= h($clear_rating['version']) ?></td>
-                    <td><?= h($clear_rating['title']) ?></td>                    
-                    <td align="center" bgcolor="<?= $l2c_dict[$clear_rating['my_lamp']] ?>"><?= $clear_rating['my_lamp'] ?></td>
-                    <td align="center" bgcolor="<?= $l2c_dict[$clear_rating['target_lamp']] ?>"><?= $clear_rating['target_lamp'] ?></td>
-                    <td align="right"><?php echo sprintf('%.2f %%',$clear_rating['clear_rate']*100); ?></td>
+                    <td><?= h($bte['version']) ?></td>
+                    <td><?= h($bte['title']) ?></td>                    
+                    <td align="center" bgcolor="<?= $l2c_dict[$bte['my_lamp']] ?>"><?= $bte['my_lamp'] ?></td>
+                    <td align="right"><?php echo sprintf('%.2f %%',$bte['clear_rate']*100); ?></td>
+                    <td align="right"><?php echo sprintf('%.2f',$bte['expect50']); ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -230,24 +175,10 @@
 <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
 
-<style type="text/css">
-.textlines {border: 2px solid #0a0;  /* 枠線 */
-    border-radius: 0.67em;   /* 角丸 */
-    padding: 0.5em;          /* 内側の余白量 */
-    background-color: snow;  /* 背景色 */
-    width: 12em;             /* 横幅 */
-    height: 2.4em;           /* 高さ */
-    font-size: 1em;          /* 文字サイズ */
-    line-height: 1.2;        /* 行の高さ */
-    overflow: hidden;
-    resize: none;
-}
-</style>
-
 <script>
     $(window).on('load',function(){
-        $('#nav-skill').addClass('active');
+        $('#nav-bts').addClass('active');
 });
 </script>
-<?= $this->Html->script('style.js') ?>
+<?= $this->Html->script('style_bts.js') ?>
 <?= $this->Html->script('garlic.js') ?>

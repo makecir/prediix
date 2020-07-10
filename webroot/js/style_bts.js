@@ -1,86 +1,3 @@
-// $('#submit-csv').hide();
-$('#upload-csv').change(function (e) {
-    var val = $('#upload-csv').val();
-    if (val) $('#submit-csv').show();
-    $('#imported-filename').text('CSV選択：' + val.substr(val.lastIndexOf("\\") + 1));
-});
-
-
-// var table = $("#foo-table").DataTable({
-//     lengthMenu: [ 2, 25, 50, 100 ],
-//     displayLength: 25,
-//     scrollX: true,
-//     scrollY: 200
-// });
-
-
-// var ctable = $("#clear-rate-table").DataTable({
-//     lengthMenu: [ 10, 20, 50, 100, 1000],
-//     displayLength: 20,
-//     // sSearch: "検索:",
-// });
-
-
-// $('form').on('change', function(event) {
-//     ctable.draw();
-// });
-
-// $.fn.dataTable.ext.search.push(
-//     function( settings, data, dataIndex ) {
-//         var form = document.forms[1];
-//         var v5 = form.elements['v5'].checked;
-
-//         var color = form.elements['color'].checked;
-//         if (color && data[0] == '青') return true;
-//         if (v5 && data[0] == '5th style') return true;
-
-//         //return false;
-//         return false;
-//     }
-// );
-
-
-// $.fn.dataTable.ext.search.push(
-//     function( settings, data, dataIndex ) {
-//         var form = document.forms[1];
-//         var color = form.elements['color'].checked;
-//         var size = form.elements['size'].checked;
-//         var price = parseFloat(form.elements['price'].value);
-//         var disc = form.elements['disc'].value;
-        
-//         if (color && data[1] !== '青') return true;
-
-//         if (color && data[1] !== '青') {
-//             return false;
-//         }
-
-
-//         if (color && data[1] !== '青') {
-//             return false;
-//         }
-
-//         if (size && data[3] !== '大') {
-//             return false;
-//         }
-
-//         if (parseFloat(data[4]) < price) {
-//             return false;
-//         }
-
-//         if (disc !== '' && data[5] !== disc) {
-//             return false;
-//         }
-
-//         return true;
-//     }
-// );
-
-// $(document).ready(function() {
-//     $('#clear-rate-table').DataTable();
-// } );
-
-
-
 $.fn.dataTable.ext.search.push(
     function( settings, data, dataIndex ) {
         // var min = parseInt( $('#min').val(), 10 );
@@ -94,7 +11,7 @@ $.fn.dataTable.ext.search.push(
         // {
         //     return true;
         // }
-        var form = document.forms[3];
+        var form = document.forms[1];
 
         //var color = form.elements['color'].checked;
         var versions = new Array('5th style',
@@ -120,38 +37,29 @@ $.fn.dataTable.ext.search.push(
             'CANNON BALLERS',
             'Rootage'
         );
-        var lamps = new Array('NO PLAY',
-            'FAILED',
-            'ASSITED',
+        var lamps = new Array(//'NO PLAY',
+            //'FAILED',
+            //'ASSITED',
             'EASY',
             'CLEAR',
             'HARD',
             'EXHARD',
             'FULLCOMBO'
         );
-        var mylamps = new Array('mynp',
-            'myfa',
-            'myae',
+        var mylamps = new Array(//'mynp',
+            //'myfa',
+            //'myae',
             'myes',
             'mycl',
             'myhd',
             'myex',
             'myfc'
         );
-        var tarlamps = new Array('tares',
-            'tarcl',
-            'tarhd',
-            'tarex',
-            'tarfc'
-        );
         for(let ver of versions) {
             if (!form.elements[ver].checked && data[0] == ver) return false;
          }
         for(let i in mylamps) {
             if (!form.elements[mylamps[i]].checked && data[2] == lamps[i]) return false;
-        }
-        for(let i in tarlamps) {
-            if (!form.elements[tarlamps[i]].checked && data[3] == lamps[(parseInt(i)+parseInt(3))]) return false;
         }
 
         return true;
@@ -205,10 +113,12 @@ $(function($){
   }); 
 
 $(document).ready(function() {
-    var table = $('#clear-rate-table').DataTable({
+    var table = $('#bte_table').DataTable({
         lengthMenu: [ 10, 20, 50, 100, 1000],
         displayLength: 20,
-        sorting: [ [4, "ASC"] ],
+        //order:  [ [3, "ASC"] ],
+        order:  [ [3, "asc"] ],
+        //sorting: [ [3, "DESC"] ],
         oLanguage: {
             /* 日本語化設定 */
             sLengthMenu : "表示　_MENU_　件", // 表示行数欄(例 = 表示 10 件)
@@ -232,12 +142,13 @@ $(document).ready(function() {
             ,{              
             'targets' :  2,
             'orderable' : true,
-            'orderDataType' : 'dom-jp'}
+            'orderDataType' : 'dom-jp'
+            }
             ,{
                 'targets' :  3,
-            'orderable' : true,
-            'orderDataType' : 'dom-jp'}
-            ,{}
+                'orderable' : true,
+                'orderDataType' : 'dom-text'
+            }
           ]
     });
     $('form').on('change', function(event) {
@@ -260,7 +171,7 @@ $(function(){
 });
 
 function checkFalse(start,end){
-    const checks = document.forms[3];
+    const checks = document.forms[1];
     for (let i = start; i <= end; i++){
         checks[i].checked = false;
         $(checks[i]).change();
@@ -268,7 +179,7 @@ function checkFalse(start,end){
     }
 }
 function checkTrue(start,end){
-    const checks = document.forms[3];
+    const checks = document.forms[1];
     for (let i = start; i <= end; i++){
         checks[i].checked = true;
         $(checks[i]).change();
@@ -277,6 +188,6 @@ function checkTrue(start,end){
 }
 
 $(function () {
-	$(document.forms[3][35]).change();
+	$(document.forms[1][27]).change();
   });
   

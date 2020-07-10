@@ -83,7 +83,9 @@ $routes->scope('/', function (RouteBuilder $builder) {
      * You can remove these routes once you've connected the
      * routes you want in your application.
      */
-    
+	$builder->connect('/about',['controller' => 'Contents', 'action' => 'about']);
+	$builder->connect('/better_than_expected',['controller' => 'Contents', 'action' => 'betterThanExpected']);
+	// $builder->connect('/skill.php',['controller' => 'Contents', 'action' => 'skill']);
     $builder->fallbacks();
     
 });
