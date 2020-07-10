@@ -42,7 +42,7 @@
         <?php if($top_pred!=1){?>
         <div>
         <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text='推定☆12レート：<?php echo sprintf('%.2f',$rating); ?> 
-逆リコメンドTOP：<?= $bte_top['title']; ?>[<?= $bte_top['my_lamp']; ?>] <?= sprintf('%.2f',$bte_top['clear_rate']*100);?>%(50%レート<?php echo sprintf('%.2f',$bte_top['expect50']); ?>)' data-url="http://prediix.starfree.jp/" data-hashtags="ClearPowerIndicator" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+逆リコメンドTOP：<?= $bte_top['title']; ?>[<?= $bte_top['my_lamp']; ?>] <?= sprintf('%.2f',$bte_top['clear_rate']*100);?>%(50%レート<?php echo sprintf('%.2f',$bte_top['expect50']); ?>)' data-url="https://cpi-beta.makecir.com/" data-hashtags="ClearPowerIndicator" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         </div>
         <?php } ?>
         </div>
