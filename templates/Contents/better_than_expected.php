@@ -14,18 +14,16 @@
 </script>
 
 
-<?php if(true){?>
-    <div class="card border-info mb-3">
-        <div class="card-header text-white bg-info" role="tab" id="headingOne">
+<div class="card border-primary mb-3">
+        <div class="card-header text-white bg-primary" role="tab" id="headingOne">
         <h5 class="mb-0">
-            アンケートのお願い
+            正式リリースの案内
         </h5>
         </div>
         <div class="card-body text-dark">
-        <p class="card-text">鋭意製作中のwebサイトです</br>改善のための<a href="https://forms.gle/dmtBFkpF7FMtKBw77" target="_blank">アンケート</a>にご協力ください</p>
+        <p class="card-text"><a href="https://cpi.makecir.com/" target="_blank">正式版</a>のサービスを開始いたしました。是非ご利用ください。</br>アンケートにご協力いただき、ありがとうございました。</p>
         </div>
     </div>
-<?php } ?>
 
 <div class="card border-secondary mb-3">
     <div class="card-header" role="tab" id="headingOne">

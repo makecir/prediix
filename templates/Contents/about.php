@@ -4,14 +4,14 @@
  */
 ?>
 
-<div class="card border-info mb-3">
-        <div class="card-header text-white bg-info" role="tab" id="headingOne">
+<div class="card border-primary mb-3">
+        <div class="card-header text-white bg-primary" role="tab" id="headingOne">
         <h5 class="mb-0">
-            アンケートのお願い
+            正式リリースの案内
         </h5>
         </div>
         <div class="card-body text-dark">
-        <p class="card-text">鋭意製作中のwebサイトです</br>改善のための<a href="https://forms.gle/dmtBFkpF7FMtKBw77" target="_blank">アンケート</a>にご協力ください</p>
+        <p class="card-text"><a href="https://cpi.makecir.com/" target="_blank">正式版</a>のサービスを開始いたしました。是非ご利用ください。</br>アンケートにご協力いただき、ありがとうございました。</p>
         </div>
     </div>
 
@@ -28,15 +28,15 @@
             <div>
                 <h3 class="card-title">利用方法</h3>
                 <p class="card-text"> IIDX公式サイト<font color="#d9534f">（要プレミアムコース）</font>からダウンロードできるCSVを読み込むことで、レーティングとクリア確率を算出します。</br>現在はPCからの使用を想定しています。スマホからの閲覧・使用には、近日中に対応予定です。 </p>
-                <ol>
-                <li><p class="card-text"> <a href="https://p.eagate.573.jp/game/2dx/27/djdata/score_download.html" target="_blank">公式サイト</a>の「SP」->「ダウンロード」からプレーデータCSVをダウンロードします。
-                </br>※スマホの場合でも、ブラウザの「デスクトップ用のサイトで閲覧」等の機能を使用することで、CSVをダウンロード可能な場合があります。</p></li>
-                <li><p class="card-text"> <a href="/" target="_blank">推定ページ</a>の「レート推定」の「CSV選択」で、ダウンロードしたCSVを選択し、「アップロード」ボタンを押します。 </p></li>
-                <li><p class="card-text"> 算出に15秒程度掛かります。お待ちください。</p></li>
-                <li><p class="card-text"> レート等が更新されれば、推定完了です。</br>
-「セーブ」ボタンを押して、ブラウザに読み込んだデータを保存することをお勧めします。</br>
-こうすることで、次回以降は「ロード」ボタンを押すことで、再びCSVをアップロードする手順を省略できます。</br>
-自身のランプの更新を反映したい場合は、再度新しいCSVをアップロードしてください。</p></li>
+                <ol class="list">
+                    <li><a href="https://p.eagate.573.jp/game/2dx/27/djdata/score_download.html" target="_blank">公式サイト</a>の「SP」->「ダウンロード」からプレーデータCSVをダウンロードします。
+                        </br>※スマホの場合でも、ブラウザの「デスクトップ用のサイトで閲覧」等の機能を使用することで、CSVをダウンロード可能な場合があります。</li>
+                    <li><a href="/" target="_blank">推定ページ</a>の「レート推定」の「CSV選択」で、ダウンロードしたCSVを選択し、「アップロード」ボタンを押します。</li>
+                    <li>算出に15秒程度掛かります。お待ちください。</li>
+                    <li>レート等が更新されれば、推定完了です。</br>
+    「セーブ」ボタンを押して、ブラウザに読み込んだデータを保存することをお勧めします。</br>
+    こうすることで、次回以降は「ロード」ボタンを押すことで、再びCSVをアップロードする手順を省略できます。</br>
+    自身のランプの更新を反映したい場合は、再度新しいCSVをアップロードしてください。</li>
                 </ol>
             </div>
 
